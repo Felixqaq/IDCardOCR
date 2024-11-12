@@ -55,8 +55,8 @@ class IDCardOCR:
         im_show.save('result.jpg')
 
 # 使用範例
-img_path = 'IDback.jpg'
-font_path = "C:\\Windows\\Fonts\\simsun.ttc"
+img_path = '.\pic\IDback.jpg'
+font_path = ".\font\simsun.ttc"
 id_card_ocr = IDCardOCR(img_path, font_path)
 id_card_ocr.process_image()
 print(id_card_ocr.address)
