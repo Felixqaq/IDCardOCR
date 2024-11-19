@@ -66,9 +66,3 @@ class Camera:
 
     def getResult(self):
         return self.captured_frame
-
-if __name__ == "__main__":
-    camera = Camera(save_to_file=True)
-    camera.open_camera()
-    camera.show_captured_frame()
-    pic = camera.getResult()

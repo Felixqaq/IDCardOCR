@@ -11,7 +11,7 @@ class IDCardProcessor:
         self.camera.open_camera()
 
         from IDCardOCR import IDCardOCR
-        self.ocr = IDCardOCR(img_path="./pic/2.jpg")
+        self.ocr = IDCardOCR(img_path='./pic/2.jpg')
         self.ocr.process_image()
         self.address = self.ocr.get_id_card_address()
 

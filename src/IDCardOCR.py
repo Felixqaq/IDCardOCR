@@ -58,15 +58,7 @@ class IDCardOCR:
         scores = [line[1][1] for line in result]
         im_show = draw_ocr(image, boxes, txts, scores, font_path=self.font_path)
         im_show = Image.fromarray(im_show)
-        im_show.save('result.jpg')
+        im_show.save('./pic/result.jpg')
 
     def get_id_card_address(self):
         return self.address
-
-img_path = '.\pic\IDback.jpg'
-try:
-    id_card_ocr = IDCardOCR()
-    id_card_ocr.process_image()
-    print(id_card_ocr.get_id_card_address())
-except ImageNotFoundException as e:
-    print(e)
