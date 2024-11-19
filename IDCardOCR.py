@@ -1,12 +1,18 @@
+import os
 from paddleocr import PaddleOCR, draw_ocr
 from ImageProcessor import ImageProcessor
 from PIL import Image
 from opencc import OpenCC
 
+class ImageNotFoundException(Exception):
+    pass
+
 class IDCardOCR:
-    def __init__(self, img_path, font_path):
+    def __init__(self, img_path='.\pic\capture.jpg'):
+        if not os.path.exists(img_path):
+            raise ImageNotFoundException(f"Image not found at path: {img_path}")
         self.img_path = img_path
-        self.font_path = font_path
+        self.font_path = ".\font\simsun.ttc"
         self.ocr = PaddleOCR(use_angle_cls=True, lang="ch")
         self.image_processor = ImageProcessor(img_path)
         self.address = []
@@ -15,8 +21,8 @@ class IDCardOCR:
         self.image_processor.correct_image_orientation()
 
     def fetch_left_text(self, line, res):
-        right_top = [line[0][1][0]+5, line[0][1][1]-20]
-        right_bottom = [line[0][2][0]+5, line[0][2][1]+50]
+        right_top = [line[0][1][0], line[0][1][1]-20]
+        right_bottom = [line[0][2][0], line[0][2][1]+40]
         address = []
         for temp in res:
             if temp[0][0][0] > right_top[0] and temp[0][0][1] > right_top[1] and temp[0][0][1] < right_bottom[1]:
@@ -54,9 +60,13 @@ class IDCardOCR:
         im_show = Image.fromarray(im_show)
         im_show.save('result.jpg')
 
-# 使用範例
+    def get_id_card_address(self):
+        return self.address
+
 img_path = '.\pic\IDback.jpg'
-font_path = ".\font\simsun.ttc"
-id_card_ocr = IDCardOCR(img_path, font_path)
-id_card_ocr.process_image()
-print(id_card_ocr.address)
+try:
+    id_card_ocr = IDCardOCR()
+    id_card_ocr.process_image()
+    print(id_card_ocr.get_id_card_address())
+except ImageNotFoundException as e:
+    print(e)

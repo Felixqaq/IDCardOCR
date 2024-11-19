@@ -1,54 +1,27 @@
-import re
-from ImageProcessor import ImageProcessor
-from TextExtractor import TextExtractor
+import os
+from Camera import Camera
 
 class IDCardProcessor:
-    def __init__(self, image_path):
-        self.image_processor = ImageProcessor(image_path)
-        self.text_extractor = None
-        self.address = ""
-        self.parents = ""
-        self.birthplace = ""
+    def __init__(self):
+        self.camera = Camera(save_to_file=True)
+        self.ocr = None
+        self.address = None
 
-    def process_image(self):
-        self.image_processor.correct_image_orientation()
-        self.text_extractor = TextExtractor(self.image_processor.image)
-        methods = ['default', 'adaptive']
-        for method in methods:
-            text = self.text_extractor.extract_text(method)
-            self.extract_address()
-            self.extract_parents()
-            self.extract_birthplace()
-            if self.address:
-                break
-        self.extract_address()
-        self.extract_parents()
-        self.extract_birthplace()
-        self.image_processor.show_image(self.image_processor.image)
+    def capture_and_process(self):
+        self.camera.open_camera()
 
-    def extract_address(self):
-        address_pattern = re.compile(r'住\s*址[:：]?\s*(.*(?:\n.*)?)')
-        address_match = address_pattern.search(self.text_extractor.text)
-        if address_match:
-            self.address = address_match.group(1).replace('\n', '').replace(' ', '')
-            print("Extracted Address:", self.address)
-        else:
-            print("Address not found")
+        from IDCardOCR import IDCardOCR
+        self.ocr = IDCardOCR(img_path="./pic/2.jpg")
+        self.ocr.process_image()
+        self.address = self.ocr.get_id_card_address()
 
-    def extract_parents(self):
-        parents_pattern = re.compile(r'父\s*母[:：]?\s*(.*(?:\n.*)?)')
-        parents_match = parents_pattern.search(self.text_extractor.text)
-        if parents_match:
-            self.parents = parents_match.group(1).replace('\n', '').replace(' ', '')
-            print("Extracted Parents:", self.parents)
-        else:
-            print("Parents not found")
+    def get_address(self):
+        return self.address
 
-    def extract_birthplace(self):
-        birthplace_pattern = re.compile(r'出\s*生\s*地[:：]?\s*(.*(?:\n.*)?)')
-        birthplace_match = birthplace_pattern.search(self.text_extractor.text)
-        if birthplace_match:
-            self.birthplace = birthplace_match.group(1).replace('\n', '').replace(' ', '')
-            print("Extracted Birthplace:", self.birthplace)
-        else:
-            print("Birthplace not found")
+if __name__ == "__main__":
+    processor = IDCardProcessor()
+    try:
+        processor.capture_and_process()
+        print(f"識別出的地址: {processor.get_address()}")
+    except Exception as e:
+        print(e)
