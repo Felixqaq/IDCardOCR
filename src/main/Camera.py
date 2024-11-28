@@ -16,7 +16,6 @@ class Camera:
             if not ret:
                 break
 
-            # 顯示提示文字
             frame = self.add_text_to_frame(frame, "Press 'Enter' to Capture")
 
             cv2.imshow("Camera", frame)

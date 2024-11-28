@@ -1,5 +1,5 @@
 pic/IDback.jpg
-src/__pycache__/
+src/main/__pycache__/
 # 編譯輸出
 /dist
 /build
