@@ -1,4 +1,8 @@
 pic/IDback.jpg
+pic/capture.jpg
+pic/result.jpg
+logs/
+
 src/main/__pycache__/
 # 編譯輸出
 /dist
